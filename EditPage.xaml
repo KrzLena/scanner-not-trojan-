@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="MauiApp1.EditPage"
+    Title="Rekord"
+    BackgroundColor="#302A32">
+
+    <Grid
+        Padding="30"
+        RowDefinitions="Auto,Auto,*,Auto"
+        RowSpacing="20">
+
+       
+        <Border
+            Grid.Row="0"
+            Stroke="black"
+            StrokeThickness="2"
+            BackgroundColor="white"
+            Padding="10,0"
+            HeightRequest="55">
+
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="15"/>
+            </Border.StrokeShape>
+
+            <Entry
+                x:Name="FirstNameEntry"
+                Placeholder="Imię:"
+                PlaceholderColor="#777777"
+                TextColor="#302A32"
+                BackgroundColor="Transparent"
+                FontSize="18"
+                VerticalOptions="Center"/>
+
+        </Border>
+
+        
+        <Border
+            Grid.Row="1"
+            Stroke="black"
+            StrokeThickness="2"
+            BackgroundColor="White"
+            Padding="10,0"
+            HeightRequest="55">
+
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="15"/>
+            </Border.StrokeShape>
+
+            <Entry
+                x:Name="LastNameEntry"
+                Placeholder="Nazwisko:"
+                PlaceholderColor="#777777"
+                TextColor="#302A32"
+                BackgroundColor="Transparent"
+                FontSize="18"
+                VerticalOptions="Center"/>
+
+        </Border>
+
+       
+        <Border
+            Grid.Row="2"
+            WidthRequest="300"
+            HeightRequest="300"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            BackgroundColor="#EEEEEE"
+            Stroke="White"
+            StrokeThickness="2">
+
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="150"/>
+            </Border.StrokeShape>
+
+        
+
+                <Image
+           Source="images.png"
+           Aspect="AspectFill"
+           WidthRequest="300"
+           HeightRequest="300"/>
+
+            </Border>
+
+        
+
+        
+        <Grid
+            Grid.Row="3"
+            ColumnDefinitions="*,*"
+            ColumnSpacing="20">
+
+            <Button
+                x:Name="SaveButton"
+                Grid.Column="0"
+                Text="Dodaj"
+                Clicked="SaveClicked"
+                BackgroundColor="#E8E8E8"
+                TextColor="#252127"
+                FontSize="18"
+                HeightRequest="55"
+                CornerRadius="15"/>
+
+            <Button
+                Grid.Column="1"
+                Text="Anuluj"
+                Clicked="CancelClicked"
+                BackgroundColor="#E8E8E8"
+                TextColor="#252127"
+                FontSize="18"
+                HeightRequest="55"
+                CornerRadius="15"/>
+
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

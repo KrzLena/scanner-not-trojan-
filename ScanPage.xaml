@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+    x:Class="MauiApp1.ScanPage"
+    Title="Skanowanie QR"
+    BackgroundColor="#302A32">
+
+    <Grid
+        Padding="20"
+        RowDefinitions="*,Auto,Auto"
+        RowSpacing="20">
+
+        <Border
+            Grid.Row="0"
+            BackgroundColor="#201C22"
+            StrokeThickness="0">
+
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="25"/>
+            </Border.StrokeShape>
+
+            <zxing:CameraBarcodeReaderView
+                x:Name="CameraView"
+                BarcodesDetected="BarcodesDetected"/>
+
+        </Border>
+
+        <VerticalStackLayout
+            Grid.Row="1"
+            Spacing="8">
+
+            <Label
+                Text="zeskanowany kod:"
+                TextColor="White"
+                FontSize="14"/>
+
+            <Border
+                BackgroundColor="#EEEEEE"
+                StrokeThickness="0"
+                Padding="10">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="4"/>
+                </Border.StrokeShape>
+
+                <Label
+                    x:Name="ScannedCodeLabel"
+                    Text=""
+                    TextColor="#252127"
+                    LineBreakMode="TailTruncation"/>
+
+            </Border>
+
+        </VerticalStackLayout>
+
+        <Grid
+            Grid.Row="2"
+            ColumnDefinitions="*,*"
+            ColumnSpacing="20">
+
+            <Button
+                Grid.Column="0"
+                Text="Skanuj"
+                Clicked="ScanClicked"
+                BackgroundColor="#E8E8E8"
+                TextColor="#252127"
+                FontSize="18"
+                HeightRequest="55"
+                CornerRadius="4"/>
+
+            <Button
+                Grid.Column="1"
+                Text="Lista"
+                Clicked="ListClicked"
+                BackgroundColor="#E8E8E8"
+                TextColor="#252127"
+                FontSize="18"
+                HeightRequest="55"
+                CornerRadius="4"/>
+
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

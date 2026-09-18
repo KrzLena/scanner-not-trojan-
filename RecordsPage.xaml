@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="MauiApp1.RecordsPage"
+    Title="Lista"
+    BackgroundColor="#302A32">
+
+    <Grid
+        Padding="20"
+        RowDefinitions="*,Auto"
+        RowSpacing="20">
+
+        <Border
+            Grid.Row="0"
+            Stroke="#756D78"
+            StrokeThickness="2"
+            BackgroundColor="#3A343D"
+            Padding="10">
+
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="5"/>
+            </Border.StrokeShape>
+
+            <CollectionView
+                x:Name="RecordsView"
+                SelectionMode="None">
+
+                <CollectionView.ItemTemplate>
+
+                    <DataTemplate>
+
+                        <Grid
+                            ColumnDefinitions="45,*"
+                            Padding="2"
+                            HeightRequest="48">
+
+                            <CheckBox
+                                Grid.Column="0"
+                                IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                Color="White"
+                                VerticalOptions="Center"/>
+
+                            <Border
+                                Grid.Column="1"
+                                BackgroundColor="#EEEEEE"
+                                StrokeThickness="0"
+                                Padding="10,5">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="3"/>
+                                </Border.StrokeShape>
+
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Tapped="RecordTapped"/>
+                                </Border.GestureRecognizers>
+
+                                <Label
+                                    Text="{Binding FullName}"
+                                    TextColor="#252127"
+                                    FontSize="16"
+                                    VerticalOptions="Center"/>
+
+                            </Border>
+
+                        </Grid>
+
+                    </DataTemplate>
+
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+
+        </Border>
+
+        <Grid
+    Grid.Row="1"
+    ColumnDefinitions="*,*,*"
+    ColumnSpacing="10">
+
+            <Button
+        Grid.Column="0"
+        Text="Skanuj"
+        Clicked="ScanClicked"
+        BackgroundColor="#E8E8E8"
+        TextColor="#252127"
+        FontSize="16"
+        CornerRadius="4"
+        HeightRequest="55"/>
+
+            <Button
+        Grid.Column="1"
+        Text="Dodaj"
+        Clicked="AddClicked"
+        BackgroundColor="#E8E8E8"
+        TextColor="#252127"
+        FontSize="16"
+        CornerRadius="4"
+        HeightRequest="55"/>
+
+            <Button
+        Grid.Column="2"
+        Text="Usuń"
+        Clicked="DeleteClicked"
+        BackgroundColor="#E8E8E8"
+        TextColor="#252127"
+        FontSize="16"
+        CornerRadius="4"
+        HeightRequest="55"/>
+
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="MauiApp1.MainPage"
+    Title="QR Records"
+    BackgroundColor="#302A32">
+
+    <Grid RowDefinitions="*,Auto,1.4*">
+
+        <VerticalStackLayout
+            Grid.Row="1"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Spacing="18">
+
+            
+            <Border
+                WidthRequest="180"
+                HeightRequest="180"
+                HorizontalOptions="Center"
+                BackgroundColor="White"
+                Stroke="White"
+                StrokeThickness="3">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="90"/>
+                </Border.StrokeShape>
+
+                <Image
+                    Source="images.png"
+                    Aspect="AspectFill"
+                    WidthRequest="180"
+                    HeightRequest="180"/>
+
+            </Border>
+
+           
+            <Button
+                Text="Skanuj QR"
+                Clicked="ScanClicked"
+                WidthRequest="260"
+                HeightRequest="60"
+                HorizontalOptions="Center"
+                BackgroundColor="#EEEEEE"
+                TextColor="#302A32"
+                FontSize="18"
+                FontAttributes="Bold"
+                CornerRadius="15"/>
+
+            
+            <Button
+                Text="Lista"
+                Clicked="ListClicked"
+                WidthRequest="260"
+                HeightRequest="60"
+                HorizontalOptions="Center"
+                BackgroundColor="#EEEEEE"
+                TextColor="#302A32"
+                FontSize="18"
+                FontAttributes="Bold"
+                CornerRadius="15"/>
+
+        </VerticalStackLayout>
+
+    </Grid>
+
+</ContentPage>
