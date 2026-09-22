@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Text.RegularExpressions;
 using ZXing.Net.Maui;
 
 namespace MauiApp1;
@@ -10,12 +12,13 @@ public partial class ScanPage : ContentPage
     {
         InitializeComponent();
 
-        CameraView.Options = new BarcodeReaderOptions
-        {
-            Formats = BarcodeFormats.TwoDimensional,
-            AutoRotate = true,
-            Multiple = false
-        };
+        CameraView.Options =
+            new BarcodeReaderOptions
+            {
+                Formats = BarcodeFormats.TwoDimensional,
+                AutoRotate = true,
+                Multiple = false
+            };
     }
 
     protected override async void OnAppearing()
@@ -31,7 +34,7 @@ public partial class ScanPage : ContentPage
         {
             await DisplayAlert(
                 "Kamera",
-                "Aplikacja potrzebuje dostêpu do kamery.",
+                "Aplikacja potrzebuje dostÄ™pu do kamery.",
                 "OK"
             );
         }
@@ -44,61 +47,140 @@ public partial class ScanPage : ContentPage
         if (!_canScan)
             return;
 
-        var result = e.Results.FirstOrDefault();
+        var result =
+            e.Results.FirstOrDefault();
 
         if (result == null)
             return;
 
         _canScan = false;
 
-        MainThread.BeginInvokeOnMainThread(async () =>
-        {
-            string text = result.Value.Trim();
-
-            ScannedCodeLabel.Text = text;
-
-            string[] dane = text.Split(
-                ' ',
-                2,
-                StringSplitOptions.RemoveEmptyEntries
-            );
-
-            if (dane.Length < 2)
+        MainThread.BeginInvokeOnMainThread(
+            async () =>
             {
+                string text =
+                    NormalizeName(result.Value);
+
+                ScannedCodeLabel.Text = text;
+
+                string[] dane =
+                    text.Split(
+                        ' ',
+                        2,
+                        StringSplitOptions.RemoveEmptyEntries
+                    );
+
+                if (dane.Length < 2)
+                {
+                    await DisplayAlert(
+                        "BÅ‚Ä…d",
+                        "Kod musi zawieraÄ‡ imiÄ™ i nazwisko.",
+                        "OK"
+                    );
+
+                    _canScan = true;
+                    return;
+                }
+
+                string firstName = dane[0];
+                string lastName = dane[1];
+
+                var duplicate =
+                    await DatabaseService
+                        .FindDuplicateAsync(
+                            text,
+                            firstName,
+                            lastName
+                        );
+
+                if (duplicate != null)
+                {
+                    string lastScan =
+                        duplicate.LastScannedAt.HasValue
+                            ? duplicate.LastScannedAt.Value
+                                .ToString("dd.MM.yyyy HH:mm")
+                            : "Nigdy";
+
+                    bool update =
+                        await DisplayAlert(
+                            "Osoba juÅ¼ istnieje",
+                            duplicate.FullName +
+                            "\n\nOstatni skan:\n" +
+                            lastScan,
+                            "Aktualizuj datÄ™",
+                            "Anuluj"
+                        );
+
+                    if (!update)
+                    {
+                        _canScan = true;
+                        return;
+                    }
+
+                    duplicate.LastScannedAt =
+                        DateTime.Now;
+
+                    await DatabaseService
+                        .UpdateRecordAsync(duplicate);
+
+                    await DisplayAlert(
+                        "Zaktualizowano",
+                        duplicate.FullName,
+                        "OK"
+                    );
+
+                    await OpenList();
+
+                    return;
+                }
+
+                PersonRecord record =
+                    new PersonRecord
+                    {
+                        FirstName = firstName,
+                        LastName = lastName,
+                        QrCode = text,
+                        CreatedAt = DateTime.Now,
+                        LastScannedAt = DateTime.Now,
+                        IsManual = false
+                    };
+
+                await DatabaseService
+                    .AddRecordAsync(record);
+
                 await DisplayAlert(
-                    "B³¹d",
-                    "Kod QR musi zawieraæ imiê i nazwisko",
+                    "Dodano",
+                    "Dodano: " + record.FullName,
                     "OK"
                 );
 
-                _canScan = true;
-                return;
-            }
+                await OpenList();
+            });
+    }
 
-            PersonRecord record = new PersonRecord
-            {
-                FirstName = dane[0],
-                LastName = dane[1],
-                QrCode = text
-            };
+    private static string NormalizeName(string value)
+    {
+        value = Regex.Replace(
+            value.Trim(),
+            @"\s+",
+            " "
+        );
 
-            var records = await RecordStore.LoadAsync();
+        var culture =
+            CultureInfo.GetCultureInfo("pl-PL");
 
-            records.Add(record);
+        return culture.TextInfo.ToTitleCase(
+            value.ToLower(culture)
+        );
+    }
 
-            await RecordStore.SaveAsync(records);
+    private async Task OpenList()
+    {
+        var page = new RecordsPage();
 
-            await DisplayAlert(
-                "Dodano",
-                "Dodano: " + record.FullName,
-                "OK"
-            );
+        await Navigation.PushAsync(page);
 
-            var recordsPage = new RecordsPage();
-
-            await Navigation.PushAsync(recordsPage);
-            Navigation.RemovePage(this);
-        });
+        Navigation.RemovePage(this);
     }
 
     private void ScanClicked(object sender, EventArgs e)
@@ -109,10 +191,6 @@ public partial class ScanPage : ContentPage
 
     private async void ListClicked(object sender, EventArgs e)
     {
-        var recordsPage = new RecordsPage();
-
-        await Navigation.PushAsync(recordsPage);
-
-        Navigation.RemovePage(this);
+        await OpenList();
     }
 }
