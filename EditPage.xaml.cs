@@ -1,3 +1,6 @@
+using System.Globalization;
+using System.Text.RegularExpressions;
+
 namespace MauiApp1;
 
 public partial class EditPage : ContentPage
@@ -17,10 +20,12 @@ public partial class EditPage : ContentPage
 
         if (_isNew)
         {
+            Title = "Dodaj osobÄ™";
             SaveButton.Text = "Dodaj";
         }
         else
         {
+            Title = "Edytuj osobÄ™";
             SaveButton.Text = "Zapisz";
         }
     }
@@ -31,39 +36,55 @@ public partial class EditPage : ContentPage
             string.IsNullOrWhiteSpace(LastNameEntry.Text))
         {
             await DisplayAlert(
-                "B³¹d",
-                "Wpisz imiê i nazwisko.",
+                "BÅ‚Ä…d",
+                "Wpisz imiÄ™ i nazwisko.",
                 "OK"
             );
 
             return;
         }
 
-        _record.FirstName = FirstNameEntry.Text.Trim();
-        _record.LastName = LastNameEntry.Text.Trim();
+        _record.FirstName =
+            NormalizeName(FirstNameEntry.Text);
 
-        var records = await RecordStore.LoadAsync();
+        _record.LastName =
+            NormalizeName(LastNameEntry.Text);
 
         if (_isNew)
         {
-            records.Add(_record);
+            _record.CreatedAt = DateTime.Now;
+            _record.IsManual = true;
+            _record.QrCode = _record.FullName;
+
+            await DatabaseService.AddRecordAsync(_record);
         }
         else
         {
-            var existing = records
-                .FirstOrDefault(x => x.Id == _record.Id);
-
-            if (existing != null)
+            if (_record.IsManual)
             {
-                existing.FirstName = _record.FirstName;
-                existing.LastName = _record.LastName;
-                existing.QrCode = _record.QrCode;
+                _record.QrCode = _record.FullName;
             }
+
+            await DatabaseService.UpdateRecordAsync(_record);
         }
 
-        await RecordStore.SaveAsync(records);
-
         await Navigation.PopAsync();
+    }
+
+    private static string NormalizeName(string value)
+    {
+        value = Regex.Replace(
+            value.Trim(),
+            @"\s+",
+            " "
+        );
+
+        var culture =
+            CultureInfo.GetCultureInfo("pl-PL");
+
+        return culture.TextInfo.ToTitleCase(
+            value.ToLower(culture)
+        );
     }
 
     private async void CancelClicked(object sender, EventArgs e)
